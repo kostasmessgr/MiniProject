@@ -2,18 +2,15 @@ package com.kostisProjects.MiniProject.controllers;
 import com.kostisProjects.MiniProject.models.Product;
 import com.kostisProjects.MiniProject.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
-@ComponentScan
-@Controller
-@RequestMapping("/products")
+
+@RestController
 public class ProductController {
 
     private static final int DEFAULT_PAGE_SIZE=20;
@@ -25,15 +22,20 @@ public class ProductController {
 
     private Page<Product> page;
 
-    @GetMapping("/products/{id}")
-    public ResponseEntity<Page> getProductById(@PathVariable("id") String id,
-                                               @PathVariable("size") int size,@PathVariable int number){
+    @GetMapping("/loadProducts")
+    public ResponseEntity<Page> loadallProducts(@PathVariable(value = "size",required = false) Integer size,@PathVariable(value ="number",required = false) Integer number){
+        System.out.println("hi");
+        if(size==null) size=DEFAULT_PAGE_SIZE;
+        if(number==null) number=STARTING_PAGE;
+        System.out.println("Inside allProducts"+size+" "+number);
         Pageable pageable = PageRequest.of(number,size);
         try {
-                page = productService.findByProductId(id,pageable);
+            productService.loadJSONs("C:\\Users\\kosta\\OneDrive\\Υπολογιστής\\Dataset\\Products.json");
             if(page.hasContent()){
+                System.out.println("Has content");
                 return new ResponseEntity<>(page,HttpStatus.OK);
             }else{
+                System.out.println("Not found");
                 return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
             }
 
@@ -42,57 +44,46 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/{title}")
-    public ResponseEntity<Page> getProductByTitle(@PathVariable("title") String title,
-                                                  @PathVariable("size") int size,@PathVariable int number){
-        Pageable pageable = PageRequest.of(number,size);
+
+    @GetMapping("/allProducts")
+    @ResponseBody
+    public ResponseEntity<Page> getallProducts(@RequestParam(defaultValue = "20",required = false) Integer pageSize,@RequestParam(defaultValue = "0",required = false) Integer pageNumber){
+        System.out.println("Inside allProducts"+pageSize+" "+pageNumber);
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
         try {
-            page = productService.findByProductId(title,pageable);
+            page = productService.listAllProducts(pageable);
             if(page.hasContent()){
+                System.out.println("Has content");
                 return new ResponseEntity<>(page,HttpStatus.OK);
             }else{
+                System.out.println("Not found");
                 return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
             }
-
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/products/{date}")
-    public ResponseEntity<Page> getProductByDate(@PathVariable("date") String date,
-                                                  @PathVariable("size") int size,@PathVariable int number){
-        Pageable pageable = PageRequest.of(number,size);
+    @GetMapping("/contains")
+    @ResponseBody
+    public ResponseEntity<Page> getProductById(@RequestParam(required = true) String context,
+                                               @RequestParam(defaultValue = "20",required = false) Integer pageSize,@RequestParam(defaultValue = "0",required = false) Integer pageNumber){
+        String contex = "a";
+        System.out.println(context);
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
         try {
-            page = productService.findByDate(date,pageable);
+            page = productService.isContained(context,pageable);
             if(page.hasContent()){
+                System.out.println("Has content");
                 return new ResponseEntity<>(page,HttpStatus.OK);
             }else{
+                System.out.println("Not found");
                 return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
             }
-
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/products/{brand}")
-    public ResponseEntity<Page> getProductByBrand(@PathVariable("brand") String brand,
-                                                  @PathVariable("size") int size,@PathVariable int number){
-        Pageable pageable = PageRequest.of(number,size);
-        try {
-            page = productService.findByBrand(brand,pageable);
-            if(page.hasContent()){
-                return new ResponseEntity<>(page,HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-            }
-
-        }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 
 
 }

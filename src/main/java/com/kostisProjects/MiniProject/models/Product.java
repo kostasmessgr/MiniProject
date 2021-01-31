@@ -1,29 +1,44 @@
 package com.kostisProjects.MiniProject.models;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.Date;
 
-@Document(collection = "products")
+@Document(collection = "test")
 public class Product {
 
     @Id
+    @JsonProperty("_id")
     private String id;
+
+    @JsonProperty("title")
     private String title;
+
+    @JsonProperty("price")
     private int price;
+
+    @JsonProperty("brand")
     private String brand;
+
+    @JsonProperty("description")
     private String description;
+
+    @JsonProperty("date")
     private String date;
+
+    @JsonProperty("asin")
+    private String asin;
 
     public Product() {
     }
 
-    public Product(String id, String title, int price, String brand, String description,String date) {
+    public Product(String id, String title, int price, String brand, String description,String date,String asin) {
         this.id = id;
         this.title = title;
         this.price = price;
         this.brand = brand;
         this.description = description;
         this.date = date;
+        this.asin=asin;
     }
 
     public String getId() {
@@ -72,6 +87,14 @@ public class Product {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getAsin() {
+        return asin;
+    }
+
+    public void setAsin(String asin) {
+        this.asin = asin;
     }
 
     @Override
