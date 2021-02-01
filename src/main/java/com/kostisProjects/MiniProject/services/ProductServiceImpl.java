@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @ComponentScan
@@ -77,30 +79,92 @@ public class ProductServiceImpl implements ProductService {
         return results;
     }
 
-    public Page<Product> isContained(String content,Pageable pageable){
-        System.out.println("contains");
-        Product p= null;
-        if(NumberUtils.isCreatable(content)){
-            p = new Product(content, content, Integer.parseInt(content), content, content, content, content);
-        }else {
-            p = new Product();
-            p.setId(content);
-            p.setAsin(content);
-            p.setBrand(content);
-            p.setDescription(content);
-            p.setDate(content);
-            p.setTitle(content);
+    public Page<Product> isContained(String key,String value,Pageable pageable){
+        //System.out.println("contains"+key+" "+value);
+        //System.out.println(key.equals("title"));
+        Product p= new Product();
+        //System.out.println(key);
+        try {
+            switch (key) {
+                case"id":
+                    p.setId(value);
+                    break;
+                case"main_cat":
+                    p.setCategory(value);
+                    break;
+                case"title":
+                    p.setTitle(value);
+                    break;
+                    //System.out.println(p.toString());
+                case"price":
+                    if(NumberUtils.isCreatable(value)) p.setPrice(value);
+                    break;
+                case"asin":
+                    p.setAsin(value);
+                    break;
+                case"brand":
+                    System.out.println("Date"+ key.equals("date"));
+                    p.setBrand(value);
+                    break;
+                case"description":
+                    System.out.println("Description"+ key.equals("date"));
+                    //p.setDescription(value);
+                    break;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-            //p = new Product(content, content, (Integer)null, content, content, content, content);
-            return contains(p,pageable);
+        System.out.println(p.toString());
+        return contains(p,pageable);
     }
 
     public Page<Product> contains(Product p,Pageable pageable){
-        //System.out.println(p.getPrice());
+        System.out.println(2);
         ExampleMatcher matcher = ExampleMatcher.matchingAny().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example<Product> productExample = Example.of(p,matcher);
         System.out.println(matcher.toString());
         System.out.println(productExample.toString());
-        return productRepository.findAll(productExample,pageable);
+        Page<Product> result =  productRepository.findAll(productExample,pageable);
+        System.out.println(result.getContent()+" "+result.getTotalElements());
+        return result;
+    }
+
+    public List<Object> getVals(JSONArray filteredarray, JSONArray sortedarray, int pageSize, int pageNumber){
+      List<Object> result = new ArrayList<>();
+        String filterKey=null;
+        String filterValue=null;
+        String sortedKey=null;
+        Boolean descValue=null;
+
+        if(filteredarray.size()>0) {
+            JSONObject filtered = (JSONObject) filteredarray.get(0);
+            filterKey= filtered.get("id").toString();
+            filterValue= filtered.get("value").toString();
+        }
+        System.out.println(sortedarray.size());
+        if(sortedarray.size()>0) {
+            JSONObject sorted = (JSONObject) sortedarray.get(0);
+            sortedKey = sorted.get("id").toString();
+            descValue = (Boolean) sorted.get("desc");
+        }
+        System.out.println("Sorted "+sortedKey+" "+descValue);
+        System.out.println("Filtered "+filterKey+" "+filterValue);
+
+        Pageable pageable = null;
+        //switch(order){
+        if(descValue!=null) {
+            if (descValue) {
+                pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC,"id",sortedKey));
+            } else {
+                pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC,"id",sortedKey));
+            }
+        }else{
+            pageable = PageRequest.of(pageNumber,pageSize);
+        }
+        result.add(sortedKey);
+        result.add(filterKey);
+        result.add(filterValue);
+        result.add(pageable);
+      return result;
     }
 }

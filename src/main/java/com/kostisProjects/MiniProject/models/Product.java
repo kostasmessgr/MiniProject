@@ -3,7 +3,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "test")
+@Document(collection = "productData")
 public class Product {
 
     @Id
@@ -14,16 +14,16 @@ public class Product {
     private String title;
 
     @JsonProperty("price")
-    private int price;
+    private String price;
 
     @JsonProperty("brand")
     private String brand;
 
-    @JsonProperty("description")
-    private String description;
+    //@JsonProperty("description")
+    //private String description;
 
-    @JsonProperty("date")
-    private String date;
+    @JsonProperty("main_cat")
+    private String category;
 
     @JsonProperty("asin")
     private String asin;
@@ -31,14 +31,22 @@ public class Product {
     public Product() {
     }
 
-    public Product(String id, String title, int price, String brand, String description,String date,String asin) {
+    public Product(String id,String title, String brand, String category, String price) {
         this.id = id;
+        this.category=category;
         this.title = title;
         this.price = price;
         this.brand = brand;
-        this.description = description;
-        this.date = date;
+        //this.description = description;
         this.asin=asin;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getId() {
@@ -57,11 +65,11 @@ public class Product {
         this.title = title;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
@@ -72,7 +80,7 @@ public class Product {
     public void setBrand(String brand) {
         this.brand = brand;
     }
-
+/*
     public String getDescription() {
         return description;
     }
@@ -80,15 +88,7 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
+*/
     public String getAsin() {
         return asin;
     }
@@ -102,10 +102,11 @@ public class Product {
         return "Product{" +
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
-                ", price=" + price +
+                ", price='" + price + '\'' +
                 ", brand='" + brand + '\'' +
-                ", description='" + description + '\'' +
-                ", date=" + date +
+                //", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", asin='" + asin + '\'' +
                 '}';
     }
 }

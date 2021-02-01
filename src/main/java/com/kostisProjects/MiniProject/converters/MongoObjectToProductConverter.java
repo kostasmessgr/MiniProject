@@ -13,8 +13,8 @@ public class MongoObjectToProductConverter {
     private Product product;
 
     public static Product convertFromJSON(JSONObject jsonObject){
-    Product result = new Product(jsonObject.get("_id.oid").toString(),jsonObject.get("title").toString(),(int)jsonObject.get("price"),jsonObject.get("brand").toString(),jsonObject.get("description").toString(),jsonObject.get("date").toString(),jsonObject.get("asin").toString());
-    return result;
+    //Product result = new Product(jsonObject.get("_id.oid").toString(),jsonObject.get("title").toString(),(int)jsonObject.get("price"),jsonObject.get("brand").toString(),jsonObject.get("description").toString(),jsonObject.get("date").toString(),jsonObject.get("asin").toString());
+    return null;
     }
 
 
