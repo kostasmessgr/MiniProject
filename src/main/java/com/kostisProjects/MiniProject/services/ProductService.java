@@ -13,9 +13,8 @@ import java.util.List;
 public interface ProductService {
 
         Page<Product> listAllProducts(Pageable pageable);
-        void loadJSONs(String filename);
         Page<Product> isContained(String key,String value, Pageable pageable);
-        Page<Product> contains(Product p,Pageable pageable);
+        Page<Product> contains(String key,Product p,Pageable pageable);
 
         List<Object> getVals(JSONArray filteredarray, JSONArray sortedarray, int pageSize, int pageNumber);
 }

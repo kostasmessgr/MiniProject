@@ -3,7 +3,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "productData")
+@Document(collection = "products")
 public class Product {
 
     @Id
@@ -18,9 +18,6 @@ public class Product {
 
     @JsonProperty("brand")
     private String brand;
-
-    //@JsonProperty("description")
-    //private String description;
 
     @JsonProperty("main_cat")
     private String category;
@@ -80,15 +77,7 @@ public class Product {
     public void setBrand(String brand) {
         this.brand = brand;
     }
-/*
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-*/
     public String getAsin() {
         return asin;
     }
